@@ -1,0 +1,51 @@
+name: Release
+
+on:
+  release:
+    types:
+      - created
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  build:
+    name: Build and release binaries
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        goos: [linux, windows, darwin]
+        goarch: ["386", amd64, arm64]
+        exclude:
+          - goos: darwin
+            goarch: "386"
+          - goos: windows
+            goarch: arm64
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Add release binaries
+        uses: wangyoucao577/go-release-action@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          goos: ${{ matrix.goos }}
+          goarch: ${{ matrix.goarch }}
+          extra_files: LICENSE README.md
+
+  docker:
+    name: Build and release container image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Login to the GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.action }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build Docker
+        run: |
+          docker build -f Dockerfile . --tag gchr.io/joereid/openapi-route-optimiser:main
+          docker push gchr.io/joereid/openapi-route-optimiser:main
