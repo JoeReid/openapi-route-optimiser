@@ -1,3 +1,5 @@
+[![Go](https://github.com/JoeReid/openapi-route-optimiser/actions/workflows/go.yml/badge.svg)](https://github.com/JoeReid/openapi-route-optimiser/actions/workflows/go.yml)
+
 # OpenAPI Route Optimiser
 
 This project is a tool for extracting and optimising routing rules for an OpenAPI yaml specification.
