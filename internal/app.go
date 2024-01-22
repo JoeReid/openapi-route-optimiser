@@ -98,7 +98,7 @@ func (a App) Run() {
 	})
 
 	a.debugf("executing template...")
-	if err := template.Execute(a.StdOut, "", payload); err != nil {
+	if err := template.Execute(a.StdOut, a.Template, payload); err != nil {
 		a.errorf(err.Error())
 		os.Exit(1)
 	}
